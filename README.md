@@ -7,6 +7,7 @@ USBデバッグ接続したAndroidデバイスのCPUコア毎のCPUクロック�
 
 グラフ描画にはgnuplotを使用する。
 
+![alt text](https://raw.github.com/pingu342/android-tool-cpustat/master/sample.png "サンプル")
 
 #使用方法
 
