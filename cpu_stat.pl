@@ -5,11 +5,11 @@ my @stat0 = readCpuStatFile($file0);
 my @stat1 = readCpuStatFile($file1);
 
 if (@stat0 <= 0) {
-	print STDERR "$file0 error.";
+	print STDERR "error: $file0 has no data.\n";
 	exit(1);
 }
 if (@stat1 <= 0) {
-	print STDERR "$file1 error.";
+	print STDERR "error: $file1 has no data.\n";
 	exit(1);
 }
 my $n0 = @stat0;

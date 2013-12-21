@@ -23,31 +23,30 @@ PROC_STAT0_FILE=proc_stat0.tmp
 PROC_STAT1_FILE=proc_stat1.tmp
 CPU_STAT_FILE=cpu_stat.tmp
 PLOT_DATA_FILE=cpu_stat.plot
+ERROR_FILE=error.tmp
 PLOT_DATA_NO=0
 if [ -e ${PLOT_DATA_FILE} ]; then
 	echo "remove old plot data."
 	rm ${PLOT_DATA_FILE}
 fi
-trap 'rm ${PROC_STAT0_FILE};
-      rm ${PROC_STAT1_FILE};
-      rm ${CPU_STAT_FILE};' EXIT
+trap 'rm -f ${PROC_STAT0_FILE};
+      rm -f ${PROC_STAT1_FILE};
+      rm -f ${CPU_STAT_FILE};
+      rm -f ${ERROR_FILE};' EXIT
 PLOTTING=0
 DEVICES=`adb devices`
-CPU_PRESENT=`adb shell cat /sys/devices/system/cpu/present`
-adb shell cat /proc/stat > ${PROC_STAT0_FILE} 
+CPU_PRESENT=`adb shell cat /sys/devices/system/cpu/present 2>/dev/null`
+adb shell cat /proc/stat 1> ${PROC_STAT0_FILE} 2>/dev/null
 sleep ${INTERVAL}
 while :
 do
 	DATE=`date +'%m-%d %H:%M:%S'`
-	CPU_ONLINE=`adb shell cat /sys/devices/system/cpu/online`
-	CPU0_FREQ=`adb shell cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq`
-	CPU1_FREQ=`adb shell cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq`
-	CPU2_FREQ=`adb shell cat /sys/devices/system/cpu/cpu2/cpufreq/scaling_cur_freq`
-	CPU3_FREQ=`adb shell cat /sys/devices/system/cpu/cpu3/cpufreq/scaling_cur_freq`
-	adb shell cat /proc/stat > ${PROC_STAT1_FILE}
-	CPU_STAT=`perl ${PERL_CPU_STAT} ${PROC_STAT0_FILE} ${PROC_STAT1_FILE}`
-	CPU_STAT_CODE=$?
-	cp ${PROC_STAT1_FILE} ${PROC_STAT0_FILE}
+	CPU_ONLINE=`adb shell cat /sys/devices/system/cpu/online 2>/dev/null`
+	CPU0_FREQ=`adb shell cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq 2>/dev/null`
+	CPU1_FREQ=`adb shell cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq 2>/dev/null`
+	CPU2_FREQ=`adb shell cat /sys/devices/system/cpu/cpu2/cpufreq/scaling_cur_freq 2>/dev/null`
+	CPU3_FREQ=`adb shell cat /sys/devices/system/cpu/cpu3/cpufreq/scaling_cur_freq 2>/dev/null`
+	adb shell cat /proc/stat 1> ${PROC_STAT1_FILE} 2>/dev/null
 
 	echo "\n[CPU STAT]" | tee ${CPU_STAT_FILE}
 	echo "no          : ${PLOT_DATA_NO}" | tee -a ${CPU_STAT_FILE}
@@ -67,14 +66,26 @@ do
 		echo "cpu3_freq   : ${CPU3_FREQ}" | tee -a ${CPU_STAT_FILE}
 	fi
 	if [ "${FLG_DEBUG}" = "TRUE" ]; then
-		echo "---\n`cat ${PROC_STAT0_FILE}`"
-		echo "---\n`cat ${PROC_STAT1_FILE}`"
+		echo "--- /proc/stat ---"
+		echo "previous    :\n`cat ${PROC_STAT0_FILE}`"
+		echo "current     :\n`cat ${PROC_STAT1_FILE}`"
 	fi
-	if [ "${CPU_STAT_CODE}" = "1" ]; then
-		echo "---\nNO DATA."
+	CPU_STAT=`perl ${PERL_CPU_STAT} ${PROC_STAT0_FILE} ${PROC_STAT1_FILE} 2>${ERROR_FILE}`
+	RESULT=$?
+	cp ${PROC_STAT1_FILE} ${PROC_STAT0_FILE}
+	echo "--- cpu usage ---" | tee -a ${CPU_STAT_FILE}
+	if [ "${RESULT}" != "0" ]; then
+		echo "An error occurred!\n`cat ${ERROR_FILE}`"
 	else
-		echo "---\n${CPU_STAT}" | tee -a ${CPU_STAT_FILE}
-		echo "`perl ${PERL_CPU_STAT_FORM_ROW} ${CPU_STAT_FILE}`" >> ${PLOT_DATA_FILE}
+		echo "${CPU_STAT}" | tee -a ${CPU_STAT_FILE}
+	fi
+	PLOT_DATA=`perl ${PERL_CPU_STAT_FORM_ROW} ${CPU_STAT_FILE} 2>${ERROR_FILE}`
+	RESULT=$?
+	echo "--- plot data ---"
+	if [ "${RESULT}" != "0" ]; then
+		echo "An error occurred!\n`cat ${ERROR_FILE}`"
+	else
+		echo ${PLOT_DATA} | tee -a ${PLOT_DATA_FILE}
 		if [ "${PLOTTING}" = "0" ]; then
 			cpu_stat_plot.sh -i 5 -s "< tail -${PLOT} ${PLOT_DATA_FILE}" &
 			PLOTTING=1;

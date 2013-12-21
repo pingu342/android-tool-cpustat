@@ -47,4 +47,4 @@ if [ "${FLG_INTERVAL}" = "TRUE" ]; then
 	echo "pause ${VAL_INTERVAL}" >> cpu_stat.gp
 	echo "reread" >> cpu_stat.gp
 fi
-gnuplot cpu_stat.gp
+gnuplot cpu_stat.gp 2>/dev/null
