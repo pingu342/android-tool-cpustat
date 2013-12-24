@@ -77,6 +77,7 @@ do
 	if [ "${RESULT}" != "0" ]; then
 		echo "An error occurred!\n`cat ${ERROR_FILE}`"
 	else
+		cat ${ERROR_FILE}
 		echo "${CPU_STAT}" | tee -a ${CPU_STAT_FILE}
 	fi
 	PLOT_DATA=`perl ${PERL_CPU_STAT_FORM_ROW} ${CPU_STAT_FILE} 2>${ERROR_FILE}`
