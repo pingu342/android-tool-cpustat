@@ -42,6 +42,14 @@ while :
 do
 	DATE=`date +'%m-%d %H:%M:%S'`
 	CPU_ONLINE=`adb shell cat /sys/devices/system/cpu/online 2>/dev/null`
+	CPU0_FREQ_MAX=`adb shell cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq 2>/dev/null`
+	CPU0_FREQ_MIN=`adb shell cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq 2>/dev/null`
+	CPU1_FREQ_MAX=`adb shell cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq 2>/dev/null`
+	CPU1_FREQ_MIN=`adb shell cat /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_min_freq 2>/dev/null`
+	CPU2_FREQ_MAX=`adb shell cat /sys/devices/system/cpu/cpu2/cpufreq/cpuinfo_max_freq 2>/dev/null`
+	CPU2_FREQ_MIN=`adb shell cat /sys/devices/system/cpu/cpu2/cpufreq/cpuinfo_min_freq 2>/dev/null`
+	CPU3_FREQ_MAX=`adb shell cat /sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_max_freq 2>/dev/null`
+	CPU3_FREQ_MIN=`adb shell cat /sys/devices/system/cpu/cpu3/cpufreq/cpuinfo_min_freq 2>/dev/null`
 	CPU0_FREQ=`adb shell cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq 2>/dev/null`
 	CPU1_FREQ=`adb shell cat /sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq 2>/dev/null`
 	CPU2_FREQ=`adb shell cat /sys/devices/system/cpu/cpu2/cpufreq/scaling_cur_freq 2>/dev/null`
@@ -49,26 +57,50 @@ do
 	adb shell cat /proc/stat 1> ${PROC_STAT1_FILE} 2>/dev/null
 
 	echo "\n[CPU STAT]" | tee ${CPU_STAT_FILE}
-	echo "no          : ${PLOT_DATA_NO}" | tee -a ${CPU_STAT_FILE}
-	echo "date        : ${DATE}" | tee -a ${CPU_STAT_FILE}
-	echo "cpu_present : ${CPU_PRESENT}" | tee -a ${CPU_STAT_FILE}
-	echo "cpu_online  : ${CPU_ONLINE}" | tee -a ${CPU_STAT_FILE}
+	echo "no            : ${PLOT_DATA_NO}" | tee -a ${CPU_STAT_FILE}
+	echo "date          : ${DATE}" | tee -a ${CPU_STAT_FILE}
+	echo "cpu_present   : ${CPU_PRESENT}" | tee -a ${CPU_STAT_FILE}
+	echo "cpu_online    : ${CPU_ONLINE}" | tee -a ${CPU_STAT_FILE}
+	if expr "${CPU0_FREQ_MAX}" : "^[0-9]*" > /dev/null; then
+		echo "cpu0_max_freq : ${CPU0_FREQ_MAX}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU1_FREQ_MAX}" : "^[0-9]*" > /dev/null; then
+		echo "cpu1_max_freq : ${CPU1_FREQ_MAX}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU2_FREQ_MAX}" : "^[0-9]*" > /dev/null; then
+		echo "cpu2_max_freq : ${CPU2_FREQ_MAX}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU3_FREQ_MAX}" : "^[0-9]*" > /dev/null; then
+		echo "cpu3_max_freq : ${CPU3_FREQ_MAX}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU0_FREQ_MIN}" : "^[0-9]*" > /dev/null; then
+		echo "cpu0_min_freq : ${CPU0_FREQ_MIN}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU1_FREQ_MIN}" : "^[0-9]*" > /dev/null; then
+		echo "cpu1_min_freq : ${CPU1_FREQ_MIN}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU2_FREQ_MIN}" : "^[0-9]*" > /dev/null; then
+		echo "cpu2_min_freq : ${CPU2_FREQ_MIN}" | tee -a ${CPU_STAT_FILE}
+	fi
+	if expr "${CPU3_FREQ_MIN}" : "^[0-9]*" > /dev/null; then
+		echo "cpu3_min_freq : ${CPU3_FREQ_MIN}" | tee -a ${CPU_STAT_FILE}
+	fi
 	if expr "${CPU0_FREQ}" : "^[0-9]*" > /dev/null; then
-		echo "cpu0_freq   : ${CPU0_FREQ}" | tee -a ${CPU_STAT_FILE}
+		echo "cpu0_freq     : ${CPU0_FREQ}" | tee -a ${CPU_STAT_FILE}
 	fi
 	if expr "${CPU1_FREQ}" : "^[0-9]*" > /dev/null; then
-		echo "cpu1_freq   : ${CPU1_FREQ}" | tee -a ${CPU_STAT_FILE}
+		echo "cpu1_freq     : ${CPU1_FREQ}" | tee -a ${CPU_STAT_FILE}
 	fi
 	if expr "${CPU2_FREQ}" : "^[0-9]*" > /dev/null; then
-		echo "cpu2_freq   : ${CPU2_FREQ}" | tee -a ${CPU_STAT_FILE}
+		echo "cpu2_freq     : ${CPU2_FREQ}" | tee -a ${CPU_STAT_FILE}
 	fi
 	if expr "${CPU3_FREQ}" : "^[0-9]*" > /dev/null; then
-		echo "cpu3_freq   : ${CPU3_FREQ}" | tee -a ${CPU_STAT_FILE}
+		echo "cpu3_freq     : ${CPU3_FREQ}" | tee -a ${CPU_STAT_FILE}
 	fi
 	if [ "${FLG_DEBUG}" = "TRUE" ]; then
 		echo "--- /proc/stat ---"
-		echo "previous    :\n`cat ${PROC_STAT0_FILE}`"
-		echo "current     :\n`cat ${PROC_STAT1_FILE}`"
+		echo "previous      :\n`cat ${PROC_STAT0_FILE}`"
+		echo "current       :\n`cat ${PROC_STAT1_FILE}`"
 	fi
 	CPU_STAT=`perl ${PERL_CPU_STAT} ${PROC_STAT0_FILE} ${PROC_STAT1_FILE} 2>${ERROR_FILE}`
 	RESULT=$?

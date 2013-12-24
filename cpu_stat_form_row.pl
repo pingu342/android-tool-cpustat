@@ -108,6 +108,8 @@ for (my $cpu=$presentCpu[0]; $cpu<=$presentCpu[1]; $cpu++) {
 }
 $totalFreq /= $cpuNum;
 
-print $head{'no'}, " ", $head{'date'}, " ", $totalFreq, " ", $head{'cpu0_freq'}, " ", $head{'cpu1_freq'}, " ", $head{'cpu2_freq'}, " ", $head{'cpu3_freq'}, " ", $cpuUsage[0], " ", $cpuUsage[1], " ", $cpuUsage[2], " ", $cpuUsage[3], " ", $cpuUsage[4], "\n";
+$totalUsage = ($cpuUsage[0] * $totalFreq) / ($head{'cpu0_max_freq'});
+
+print $head{'no'}, " ", $head{'date'}, " ", $totalFreq, " ", $head{'cpu0_freq'}, " ", $head{'cpu1_freq'}, " ", $head{'cpu2_freq'}, " ", $head{'cpu3_freq'}, " ", $cpuUsage[0], " ", $cpuUsage[1], " ", $cpuUsage[2], " ", $cpuUsage[3], " ", $cpuUsage[4], " ", $totalUsage, "\n";
 
 exit(0);

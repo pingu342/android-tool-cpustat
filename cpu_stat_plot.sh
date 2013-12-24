@@ -37,12 +37,13 @@ echo "plot '${SOURCE}' using 1:5 title \"cpu0_freq\" with linespoints" >> cpu_st
 echo "replot '${SOURCE}' using 1:6 title \"cpu1_freq\" with linespoints" >> cpu_stat.gp
 echo "replot '${SOURCE}' using 1:7 title \"cpu2_freq\" with linespoints" >> cpu_stat.gp
 echo "replot '${SOURCE}' using 1:8 title \"cpu3_freq\" with linespoints" >> cpu_stat.gp
-echo "replot '${SOURCE}' using 1:4 title \"total_cpu_freq\" with linespoints linewidth 4" >> cpu_stat.gp
+echo "replot '${SOURCE}' using 1:4 title \"cpu_freq_avg\" with linespoints linewidth 3" >> cpu_stat.gp
 echo "replot '${SOURCE}' using 1:10 title \"cpu0_usage\" with linespoints axes x1y2" >> cpu_stat.gp
 echo "replot '${SOURCE}' using 1:11 title \"cpu1_usage\" with linespoints axes x1y2" >> cpu_stat.gp
 echo "replot '${SOURCE}' using 1:12 title \"cpu2_usage\" with linespoints axes x1y2" >> cpu_stat.gp
 echo "replot '${SOURCE}' using 1:13 title \"cpu3_usage\" with linespoints axes x1y2" >> cpu_stat.gp
-echo "replot '${SOURCE}' using 1:9 title \"total_cpu_usage\" with linespoints axes x1y2 linewidth 4" >> cpu_stat.gp
+echo "replot '${SOURCE}' using 1:9 title \"cpu_usage_avg\" with linespoints axes x1y2 linewidth 3" >> cpu_stat.gp
+echo "replot '${SOURCE}' using 1:14 title \"cpu_usage_total\" with linespoints axes x1y2 linewidth 5" >> cpu_stat.gp
 if [ "${FLG_INTERVAL}" = "TRUE" ]; then
 	echo "pause ${VAL_INTERVAL}" >> cpu_stat.gp
 	echo "reread" >> cpu_stat.gp
