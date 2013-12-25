@@ -118,6 +118,7 @@ do
 	if [ "${RESULT}" != "0" ]; then
 		echo "An error occurred!\n`cat ${ERROR_FILE}`"
 	else
+		cat ${ERROR_FILE}
 		echo ${PLOT_DATA} | tee -a ${PLOT_DATA_FILE}
 		if [ "${PLOTTING}" = "0" ]; then
 			cpu_stat_plot.sh -i 5 -s "< tail -${PLOT} ${PLOT_DATA_FILE}" &
