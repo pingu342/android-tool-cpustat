@@ -60,12 +60,14 @@ CPUクロック・CPU使用率をリアルタイムに5秒間隔でグラフに�
 #凡例の意味
 
 * `cpux_freq`
-   * CPUコア0〜4のCPU周波数
+   * 各CPUコアのCPU周波数
 * `cpu_freq_avg`
    * `cpux_freq`の平均値
 * `cpux_usage`
-   * CPUコア0〜4のCPU使用率
+   * 各CPUコアのCPU使用率
 * `cpu_usage_avg`
    * `cpux_usage`の平均値
 * `cpu_usage_total`
-   * 「全CPUコアが最大周波数で動作かつ使用率100%である場合を100」とした場合のCPU使用率
+   * 「全CPUコアが最大周波数かつ使用率100%で動作した場合を100」とした場合の総CPU使用率 (下式で算出)
+    `cpu_usage_total = (cpu_usage_avg * cpu_freq_avg) / (100 * cpu_max_freq) * 100`
+
