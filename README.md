@@ -12,8 +12,14 @@ USBデバッグ接続したAndroidデバイスのCPUコア毎のCPUクロック�
 #実行環境
 
 * OS
-    * Mac OS X
+   * Mac OS X
 
+* 必要な外部ツール (MacPortsでインストール)
+   * gnuplot
+   * perl
+
+* Androidデバイス
+   * クアッドコアまでサポート
 
 #使用方法
 
@@ -51,6 +57,15 @@ CPUクロック・CPU使用率をリアルタイムに5秒間隔でグラフに�
 
     $ cpu_stat_plot.sh -x [50:60]
 
+#凡例の意味
 
-
-
+* `cpux_freq`
+   * CPUコア0〜4のCPU周波数
+* `cpu_freq_avg`
+   * `cpux_freq`の平均値
+* `cpux_usage`
+   * CPUコア0〜4のCPU使用率
+* `cpu_usage_avg`
+   * `cpux_usage`の平均値
+* `cpu_usage_total`
+   * 「全CPUコアが最大周波数で動作かつ使用率100%である場合を100」とした場合のCPU使用率
